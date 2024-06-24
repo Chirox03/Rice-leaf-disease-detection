@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Rice leaf disease detection</title>
+    
+</head>
+<body>
+    <div>
+        <h1>Rice leaf disease detector  </h1>
+    </div>
+    <div class="container">
+        <div class="image-upload">
+            <div class="input">
+                <h2> Input image</h2>
+                <form id="uploadForm" method="POST" enctype="multipart/form-data" class="custom-file-upload">
+                    <label for="file"m class="button-28">                 
+                        <span>Click to upload image</span>
+                        <input id="file" type="file" name="file" onchange="previewImage(event)" style="display: none;">
+                    </label>
+                </form>
+            </div>
+            <div class="image-preview" id="imagePreview" style="display: none;">
+                <img id="previewImage" src="" alt="Image Preview">
+            </div>
+        </div>
+        
+        <div class="submit">
+            <button class="button-28" type="button" onclick="submitForm()">Detect</button>
+        </div>
+        <div class="label">
+            <h2>
+                Predicted label: 
+            </h2>
+            <h2 id="predictionLabel"></h2>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function previewImage(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function() {
+        var output = document.getElementById('previewImage');
+        output.src = reader.result;
+        document.getElementById('imagePreview').style.display = 'block';
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+        // Clear the image preview and hide the preview container if no file selected
+        var output = document.getElementById('previewImage');
+        output.src = '';
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+}
+        function submitForm() {
+            var formData = new FormData();
+            var fileInput = document.getElementById('file');
+            formData.append('file', fileInput.files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var prediction = response.prediction;
+                    document.getElementById('predictionLabel').textContent =  prediction;
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
