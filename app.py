@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 from werkzeug.utils import secure_filename
 from model import load_model_and_predict
-from download_models import download_models
-download_models()
+
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'static/uploads/'
